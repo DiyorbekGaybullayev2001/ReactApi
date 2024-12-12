@@ -1,12 +1,23 @@
 import './App.css'
-
+import {Routes, Route , BrowserRouter} from 'react-router-dom'
+import Login from './Pages/loginpage/login'
+import Homepage from './Pages/homepage/homepage'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
  
 
   return (
     <>
-      <div className='text-[red] text-[30px]'>salom</div>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<Login/>}/>
+          <Route path='/home' element={<Homepage/>}/>
+        </Routes>
+        <ToastContainer />
+      </BrowserRouter>
+
     </>
   )
 }
