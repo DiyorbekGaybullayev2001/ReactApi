@@ -49,9 +49,9 @@ function Login() {
 
   return (
     <div className='container m-auto h-[100vh] items-center'>
-        <form onSubmit={loginSubmit} className='grid grid-cols-1 m-auto items-center w-[400px] p-[10px] mt-[300px] '>
-          <input onChange={(e)=>{setPhone(e.target.value)}} className='border w-[100%] h-[35px]  rounded-lg m-[10px] p-[5px]' type="text" placeholder='Number' required min={2}/>  
-          <input onChange={(e)=>{setParol(e.target.value)}} className='border w-full h-[35px] m-[10px] rounded-lg p-[5px]' type="text" placeholder='Password' required min={2}/>  
+        <form onSubmit={loginSubmit} className='grid grid-cols-1 m-auto items-center w-[400px] p-[10px] pt-[300px] '>
+          <input onChange={(e)=>{setPhone(e.target.value)}} className='border w-[100%] h-[35px]  rounded-lg m-[10px] p-[5px]' type="text" placeholder='Number' required minLength={2}/>  
+          <input onChange={(e)=>{setParol(e.target.value)}} className='border w-full h-[35px] m-[10px] rounded-lg p-[5px]' type="text" placeholder='Password' required minLength={2}/>  
           <button className='border w-full h-[35px] m-[10px] text-[20px] rounded-lg  bg-[#2c4ddf] text-[#ffffff]'>LOGIN</button>  
         </form>
     </div>
