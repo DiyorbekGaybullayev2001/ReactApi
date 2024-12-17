@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { NavLink, Route, Routes, useNavigate} from 'react-router-dom'
 import { toast } from 'react-toastify'
 
-export default function Categories() {
+export default function Main() {
 
     
   const navigate = useNavigate()

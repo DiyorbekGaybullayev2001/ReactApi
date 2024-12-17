@@ -1,11 +1,11 @@
 import React from 'react'
 
-function Dashboart() {
+function Dashboard() {
   return (
-    <div>
-      salokndjaofbdhiggbukdytrh
+    <div className='pt-[90px] ml-5'>
+      <p>Dashboard</p>
     </div>
   )
 }
 
-export default Dashboart
+export default Dashboard
