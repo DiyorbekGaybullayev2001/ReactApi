@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate} from 'react-router-dom'
+import { NavLink, Route, Routes, useNavigate} from 'react-router-dom'
 import { toast } from 'react-toastify'
+// import Dashboart from '../dashboard/dashboart'
+// import Categories from '../categories/categories'
 
 function Homepage() {
 
@@ -11,6 +13,7 @@ function Homepage() {
     navigate("/")
   }
   // https://realauto.limsa.uz/api/categories
+
   // get
   const [categ, setcateg]=useState([])
   const getCategories=()=>{
@@ -20,7 +23,6 @@ function Homepage() {
   }
   useEffect(()=>{
     getCategories()
-    
   },[])
   
   const [modal, setmodal] = useState(false)
@@ -136,21 +138,57 @@ const editCategory = async (e) => {
   
   return (
     <> 
+
+
+    <div className='flex'>
+      <nav className='bg-[#0e1685] block h-[100vh] w-[300px]'>
+        <ul className='text-white'>
+
+          <li className='text-[30px] font-bold px-[50px] mt-[15px]'>
+            <NavLink>ADMIN</NavLink>
+          </li>
+
+          <li className='text-[25px] font-semibold px-[15px] mt-[30px] hover:bg-[#2c2cb8]'>
+            <NavLink to={"/dashboart"}>Dashboart</NavLink>
+          </li>
+
+          <li className='text-[25px] font-semibold px-[15px] hover:bg-[#2c2cb8]'>
+            <NavLink to={"/categories"}>Categories</NavLink>
+          </li>
+          
+        </ul>
+
+      </nav>
+      <div className='bg-[#0e1685] w-full h-[80px] text-right items-center'>
+        <button onClick={logoutfc} className="bg-red-500 p-4 m-[10px] rounded-lg text-white">Log Out</button>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
       {
         modal && (
           <div className='fixed z-500 items-center m-auto bg-[#d7d7d7] w-[100%] h-[100%]' >
             <div className='absolute top-[300px] w-full items-center h-[100vh] m-auto'>
-
-          <form onSubmit={editId ? editCategory : createCategories} className="items-center m-auto grid grid-cols-1 w-[30%] p-[10px] text-center">
-            <input
-              value={nameEn}
-              onChange={(e) => setNameEn(e?.target?.value)}
-              className="border m-[10px] p-[10px] rounded-lg"
-              type="text"
-              placeholder="name en"
-              required
-              minLength={2}
-              />
+             <form onSubmit={editId ? editCategory : createCategories} className="items-center m-auto grid grid-cols-1 w-[30%] p-[10px] text-center">
+             <input
+               value={nameEn}
+               onChange={(e) => setNameEn(e?.target?.value)}
+               className="border m-[10px] p-[10px] rounded-lg"
+               type="text"
+               placeholder="name en"
+               required
+               minLength={2}
+               />
             <input
               value={nameRu}
               onChange={(e) => setNameRu(e?.target?.value)}
@@ -188,15 +226,10 @@ const editCategory = async (e) => {
             </form>
           </div>
         )
-      } */}
+      } */} 
 
-<div className='flex '>
-<div className='overflow-y-scroll overflow-hidden h-[100vh] pt-[70px] w-full'>
-      
-
-      
-          
-
+    <div className='flex '>
+     <div className='overflow-y-scroll overflow-hidden h-[100vh] pt-[70px] w-full'>
           <table className='w-full border-collapse'>
         <thead>
         <tr className='bg-[#371ce4] text-white'>
@@ -242,7 +275,7 @@ const editCategory = async (e) => {
 
       </div>
 
-
+    
 
 
       
