@@ -65,7 +65,7 @@ function Homepage() {
             <Route path="locations" element={<Locations/>} />
             <Route path="model" element={<Models/>} />
             <Route path="cars" element={<Cars/>} />
-            {/* <Route path="*" element={<Main/>} />  */}
+            {/* <Route path="/*" element={<Homepage/>} />  */}
           </Routes>
         </div>
       </div>

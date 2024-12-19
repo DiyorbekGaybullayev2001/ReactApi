@@ -20,7 +20,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<Login/>}/>
-            <Route path='/home/*' element={<Layout/>}>
+            <Route path='home/*' element={<Layout/>}>
               <Route path='dashboard' element={<Dashboard/>}/>
               <Route path='categories' element={<Categories/>}/>
               <Route path="brands" element={<Brands/>} />
@@ -31,9 +31,6 @@ function App() {
             </Route>
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
-
-        
-    
         <ToastContainer />
       </BrowserRouter>
     </>
