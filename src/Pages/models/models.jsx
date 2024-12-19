@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from 'react'
-import { NavLink, Route, Routes, useNavigate} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import { toast } from 'react-toastify'
 
-export default function Categories() {
+export default function Models() {
 
+    
   const navigate = useNavigate()
-  const [modal, setmodal] = useState(false)
   
   const logoutfc=()=>{
     localStorage.removeItem("tokencha")
     navigate("/")
   }
-  // https://realauto.limsa.uz/api/categories
+  // https://realauto.limsa.uz/api/
 
   // get
   const [categ, setcateg]=useState([])
   const getCategories=()=>{
-    fetch("https://realauto.limsa.uz/api/categories")
+    fetch("https://realauto.limsa.uz/api/models")
     .then((resp)=>resp.json())
     .then((element)=>setcateg(element?.data))
   }
@@ -24,23 +24,26 @@ export default function Categories() {
     getCategories()
   },[])
   
-  
+  const [modal, setmodal] = useState(false)
+
   //post
-  const [nameEn, setNameEn]=useState()
-  const [nameRu, setNameRu]=useState()
+  const [name, setName]=useState()
+  const [brand_id, setBrandId]=useState()
   const [images, setImages]=useState()
-  // console.log(nameEn, nameRu, images);
+  // console.log(name, text, images);
+
   const formdata = new FormData()
-  formdata.append("name_en", nameEn)
-  formdata.append("name_ru", nameRu)
+  formdata.append("name", name)
+  formdata.append("brand_id", brand_id)
   formdata.append("images", images)
   const token =localStorage.getItem("tokencha")
   const createCategories=(e)=>{
     e.preventDefault()
-    fetch("https://realauto.limsa.uz/api/categories",{
+    fetch("https://realauto.limsa.uz/api/models",{
       method:"POST",
       headers:{
         // "Content-type":"multipart/formdata",
+        // "Content-Type": "application/json",  // JSON format
         "Authorization":`Bearer ${token}`
       },
       body:formdata
@@ -50,8 +53,8 @@ export default function Categories() {
         toast.success(item?.message)
         getCategories()
         e?.target?.reset()
-        setNameEn('');    // State-ni reset qilish
-        setNameRu('');
+        setName('');    // State-ni reset qilish
+        setBrandId('');
         setImages(null);
         setmodal(false)
       } else {
@@ -62,8 +65,8 @@ export default function Categories() {
 
   const handleEdit = (item) => {
     setEditId(item?.id);
-    setNameEn(item?.name_en);
-    setNameRu(item?.name_ru);
+    setName(item?.name);
+    setBrandId(item?.brand_id);
     setImages(null);
     setmodal(true);
   };
@@ -72,7 +75,7 @@ export default function Categories() {
   // delete
   const deleteCategory = async (id) => {
     try {
-      const response = await fetch(`https://realauto.limsa.uz/api/categories/${id}`, {
+      const response = await fetch(`https://realauto.limsa.uz/api/models/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -96,12 +99,12 @@ export default function Categories() {
 const editCategory = async (e) => {
   e.preventDefault();
   const formData = new FormData();
-  formData.append("name_en", nameEn);
-  formData.append("name_ru", nameRu);
+  formData.append("name", name);
+  formData.append("brand_id", brand_id);
   if (images) formData.append("images", images);
 
   try {
-    const response = await fetch(`https://realauto.limsa.uz/api/categories/${editId}`, {
+    const response = await fetch(`https://realauto.limsa.uz/api/models/${editId}`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -115,8 +118,8 @@ const editCategory = async (e) => {
       setmodal(false);
       setEditId(null);
       e?.target.reset()
-      setNameEn('');    // State-ni reset qilish
-      setNameRu('');
+      setName('');    // State-ni reset qilish
+      setBrandId('');
       setImages(null);
     } else {
       toast.error(result?.message);
@@ -125,30 +128,32 @@ const editCategory = async (e) => {
     toast.error("Tahrirlash jarayonida xatolik yuz berdi!");
   }
 };
+
+
   return (
     <>
     <div className='w-full'>
 
-    {
+      {
         modal && (
-          <div className='fixed z-500 items-center m-auto bg-[#d7d7d7] w-[100%] h-[100%]' >
+          <div className='fixed z-500 items-center m-auto bg-[#d7d7d7] w-[100%] h-[100%] ' >
             <div className='absolute top-[250px] w-full items-center h-[100vh] m-auto text-center'>
              <form onSubmit={editId ? editCategory : createCategories} className="items-center m-auto grid grid-cols-1 w-[30%] p-[10px] text-center">
              <input
-               value={nameEn}
-               onChange={(e) => setNameEn(e?.target?.value)}
+               value={name}
+               onChange={(e) => setName(e?.target?.value)}
                className="border m-[10px] p-[10px] rounded-lg"
                type="text"
-               placeholder="name en"
+               placeholder="Name"
                required
                minLength={2}
                />
             <input
-              value={nameRu}
-              onChange={(e) => setNameRu(e?.target?.value)}
+              value={brand_id}
+              onChange={(e) => setBrandId(e?.target?.value)}
               className="border m-[10px] p-[10px] rounded-lg"
               type="text"
-              placeholder="name ru"
+              placeholder="Brand ID"
               required
               minLength={2}
               />
@@ -158,11 +163,9 @@ const editCategory = async (e) => {
               className="border m-[10px] p-[10px] rounded-lg"
               type="file"
               />
-            <button className="border text-white font-semibold m-[10px] p-[10px] rounded-lg bg-[#2d3ce3]">
+            <button className="border m-[10px] p-[10px] text-white font-semibold rounded-lg bg-[#2d3ce3]">
               {editId ? "Edit" : "Add"} +
             </button>
-
-
           </form>
           <button onClick={() => setmodal(false)}  className="border text-white font-bold px-[80px] p-[10px] rounded-xl bg-[#5f1fdf]"> CLOSE </button>
               </div>
@@ -176,8 +179,8 @@ const editCategory = async (e) => {
           <table className='w-full border-collapse'>
         <thead>
         <tr className='bg-[#371ce4] text-white'>
-        <th className='border text-left p-[8px]'>Name En</th>
-        <th className='border text-left p-[8px]'>Name Ru</th>
+        <th className='border text-left p-[8px]'>Name</th>
+        <th className='border text-left p-[8px]'>Brand Id</th>
         <th className='border text-left p-[8px]'>Images</th>
         <th className='bg-white'> {
           !modal &&
@@ -189,8 +192,8 @@ const editCategory = async (e) => {
         {
           categ?.map((item, index)=>(
             <tr key={index} className='bg-[#f0f0f0] '> 
-            <td className='border text-left p-[8px]'>{item?.name_en}</td>
-            <td className='border text-left p-[8px]'>{item?.name_ru}</td>
+            <td className='border text-left p-[8px]'>{item?.name}</td>
+            <td className='border text-left p-[8px]'>{item?.brand_id}</td>
             <td className='border text-left p-[5px]'>
             <img className='h-[100px] w-[200px]' src={`https://realauto.limsa.uz/api/uploads/images/${item?.image_src}`} alt="" />
             </td>
@@ -221,3 +224,5 @@ const editCategory = async (e) => {
     </>
   )
 }
+
+
