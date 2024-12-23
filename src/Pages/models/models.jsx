@@ -13,29 +13,40 @@ export default function Models() {
   }
   // https://realauto.limsa.uz/api/
 
-  // get
-  const [categ, setcateg]=useState([])
-  const getCategories=()=>{
+  // get brand
+  const [brand, setBrand]=useState([])
+  const getBrands=()=>{
+    fetch("https://realauto.limsa.uz/api/brands")
+    .then((resp)=>resp.json())
+    .then((element)=>setBrand(element?.data))
+  }
+
+
+  //get model
+  const [model, setModel]=useState([])
+  const getModels=()=>{
     fetch("https://realauto.limsa.uz/api/models")
     .then((resp)=>resp.json())
-    .then((element)=>setcateg(element?.data))
+    .then((element)=>setModel(element?.data))
   }
+
   useEffect(()=>{
-    getCategories()
+    getBrands()
+    getModels()
   },[])
   
+  
   const [modal, setmodal] = useState(false)
-
   //post
   const [name, setName]=useState()
-  const [brand_id, setBrandId]=useState()
-  const [images, setImages]=useState()
+  const [selectedBrand, setselectedBrand] = useState()
+  // const [images, setImages]=useState()
   // console.log(name, text, images);
 
   const formdata = new FormData()
   formdata.append("name", name)
-  formdata.append("brand_id", brand_id)
-  formdata.append("images", images)
+  formdata.append("brand_id", selectedBrand)
+  // formdata.append("images", images)
   const token =localStorage.getItem("tokencha")
   const createCategories=(e)=>{
     e.preventDefault()
@@ -51,11 +62,11 @@ export default function Models() {
     .then((item)=>{
       if (item?.success) {
         toast.success(item?.message)
-        getCategories()
+        getModels()
         e?.target?.reset()
         setName('');    // State-ni reset qilish
-        setBrandId('');
-        setImages(null);
+        setselectedBrand('');
+        // setImages(null);
         setmodal(false)
       } else {
         toast.error(item?.message)
@@ -66,8 +77,8 @@ export default function Models() {
   const handleEdit = (item) => {
     setEditId(item?.id);
     setName(item?.name);
-    setBrandId(item?.brand_id);
-    setImages(null);
+    setselectedBrand(item?.brand_id);
+    // setImages(null);
     setmodal(true);
   };
   
@@ -75,7 +86,7 @@ export default function Models() {
   // delete
   const deleteCategory = async (id) => {
     try {
-      const response = await fetch(`https://realauto.limsa.uz/api/models/${id}`, {
+      const response = await fetch(`https://realauto.limsa.uz/api/cars/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -84,7 +95,7 @@ export default function Models() {
       const result = await response.json();
       if (result?.success) {
         toast.success(result?.message);
-        getCategories(); // Ro'yxatni yangilash
+        getModels(); // Ro'yxatni yangilash
       } else {
         toast.error(result?.message);
       }
@@ -96,13 +107,12 @@ export default function Models() {
   // put 
   const [editId, setEditId] = useState(null);
 
-const editCategory = async (e) => {
+ const editCategory = async (e) => {
   e.preventDefault();
   const formData = new FormData();
   formData.append("name", name);
-  formData.append("brand_id", brand_id);
-  if (images) formData.append("images", images);
-
+  formData.append("brand_id", selectedBrand);
+  // if (images) formData.append("images", images);
   try {
     const response = await fetch(`https://realauto.limsa.uz/api/models/${editId}`, {
       method: "PUT",
@@ -114,13 +124,13 @@ const editCategory = async (e) => {
     const result = await response.json();
     if (result?.success) {
       toast.success(result?.message);
-      getCategories();
+      getModels();
       setmodal(false);
       setEditId(null);
       e?.target.reset()
       setName('');    // State-ni reset qilish
-      setBrandId('');
-      setImages(null);
+      setselectedBrand('');
+      // setImages(null);
     } else {
       toast.error(result?.message);
     }
@@ -148,21 +158,23 @@ const editCategory = async (e) => {
                required
                minLength={2}
                />
-            <input
-              value={brand_id}
-              onChange={(e) => setBrandId(e?.target?.value)}
-              className="border m-[10px] p-[10px] rounded-lg"
-              type="text"
-              placeholder="Brand ID"
-              required
-              minLength={2}
-              />
-            <input
+              <div className='w-full h-[100%] text-start  p-[10px]'>
+                <p className=' font-semibold'>Brands ID</p>
+                <select onChange={(e)=>setselectedBrand(e?.target?.value)} className='rounded-xl w-full p-[8px] '> 
+                  <option>Select Brands</option>
+                  {
+                    brand.map((item)=>(
+                      <option key={item.id} value={item.id}>{item?.title}</option>
+                    ))
+                  }
+                </select>
+              </div>
+            {/* <input
               onChange={(e) => setImages(e?.target?.files[0])}
               accept="image/*"
               className="border m-[10px] p-[10px] rounded-lg"
               type="file"
-              />
+              /> */}
             <button className="border m-[10px] p-[10px] text-white font-semibold rounded-lg bg-[#2d3ce3]">
               {editId ? "Edit" : "Add"} +
             </button>
@@ -179,9 +191,10 @@ const editCategory = async (e) => {
           <table className='w-full border-collapse'>
         <thead>
         <tr className='bg-[#371ce4] text-white'>
+        <th className='border text-left p-[8px]'>N:</th>
         <th className='border text-left p-[8px]'>Name</th>
         <th className='border text-left p-[8px]'>Brand Id</th>
-        <th className='border text-left p-[8px]'>Images</th>
+        {/* <th className='border text-left p-[8px]'>Images</th> */}
         <th className='bg-white'> {
           !modal &&
           <button onClick={()=>setmodal(true)} className='bg-[#5f1fdf] p-[10px]'> Add  + </button>
@@ -190,13 +203,14 @@ const editCategory = async (e) => {
         </thead>
         <tbody>
         {
-          categ?.map((item, index)=>(
-            <tr key={index} className='bg-[#f0f0f0] '> 
+          model?.map((item, index)=>(
+            <tr key={index} className='bg-[#f0f0f0]'> 
+            <td className='border text-left p-[8px]'>{index+1}</td>
             <td className='border text-left p-[8px]'>{item?.name}</td>
-            <td className='border text-left p-[8px]'>{item?.brand_id}</td>
-            <td className='border text-left p-[5px]'>
+            <td className='border text-left p-[8px]'>{item?.brand_title}</td>
+            {/* <td className='border text-left p-[5px]'>
             <img className='h-[100px] w-[200px]' src={`https://realauto.limsa.uz/api/uploads/images/${item?.image_src}`} alt="" />
-            </td>
+            </td> */}
               <td> 
                 <button
                     onClick={() => handleEdit(item)}

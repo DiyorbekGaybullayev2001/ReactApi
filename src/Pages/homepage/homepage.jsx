@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { NavLink, Route, Routes, useNavigate} from 'react-router-dom'
 import { toast } from 'react-toastify'
-import Main from '../Main/Main'
+// import Main from '../Main/Main'
 // import Categories from '../categories/categories'
 import Categories from '../categories/categories'
 import Dashboard from '../dashboard/dashboart'
